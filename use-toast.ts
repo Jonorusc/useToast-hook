@@ -16,10 +16,10 @@ export type Toast = {
   type: 'success' | 'error' | 'warning' | 'info'
   position: POSITION
   timeout: number
-  remainingTime: number
-  startTime: number
+  remainingTime?: number
+  startTime?: number
   data: ToastData
-  hovered: boolean
+  hovered?: boolean
   timerId?: NodeJS.Timeout
 }
 
@@ -60,7 +60,12 @@ export const useToast = create<ToastProps>((set, get) => ({
         toast.hovered = true
         if (toast.timerId) {
           clearTimeout(toast.timerId)
-          toast.remainingTime -= Date.now() - toast.startTime
+          if (
+            toast.remainingTime !== undefined &&
+            toast.startTime !== undefined
+          ) {
+            toast.remainingTime -= Date.now() - toast.startTime
+          }
         }
       }
       return { toasts: [...state.toasts] }
